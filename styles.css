@@ -564,3 +564,8 @@ button, input, select { font: inherit; color: inherit; }
   animation: levitar 4s ease-in-out infinite;
 }
 .regalo__texto { text-align: center; margin-left: auto; margin-right: auto; }
+
+/* Confirmar: todo centrado y aire para el "¡Gracias!" */
+.contenido--confirmar { text-align: center; align-items: center; justify-content: center; padding-top: 18%; }
+.contenido--confirmar .nota { max-width: 56cqw; margin: 0 auto; }
+.contenido--confirmar .gracias { margin-top: 8cqw; }
