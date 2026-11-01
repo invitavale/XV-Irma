@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>XV Años de Irma Roshely · 18 de diciembre de 2026</title>
+  <meta name="description" content="Estás cordialmente invitado(a) a los XV años de Irma Roshely. Viernes 18 de diciembre de 2026, 7:00 p. m.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#e9dcf3">
+  <meta property="og:title" content="XV Años de Irma Roshely">
+  <meta property="og:description" content="Viernes 18 de diciembre de 2026 · 7:00 p. m. · ¡Te espero!">
+  <meta property="og:image" content="fondo-portada.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="intro-activa">
+
+  <!-- ============ INTRO: UN TOQUE INICIA EL VIDEO Y LA MÚSICA ============ -->
+  <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Bienvenida">
+    <div class="intro__fondo" aria-hidden="true"></div>
+    <video class="intro__video" id="introVideo"
+           src="intro.mp4" poster="intro-poster.webp"
+           muted playsinline webkit-playsinline preload="auto"></video>
+    <div class="intro__destello" aria-hidden="true"></div>
+
+    <!-- Este toque arranca el video y la música a la vez (permitido en todos los navegadores) -->
+    <button class="intro__tocar" id="introTocar" type="button" aria-label="Toca aquí para abrir tu invitación">
+      <span id="introTocarTexto">Toca aquí</span>
+    </button>
+
+    <button class="intro__saltar" id="introSaltar" type="button" hidden>Saltar</button>
+  </div>
+
+  <!-- Reproductor oculto de YouTube -->
+  <div class="yt-oculto" aria-hidden="true"><div id="youtube-player"></div></div>
+  <!-- Reproductor para archivo MP3 propio (opción más segura en iPhone) -->
+  <audio id="musicaAudio" preload="auto" loop playsinline></audio>
+
+  <!-- Botón flotante de música -->
+  <button class="musica" id="musicaToggle" type="button" aria-label="Reproducir música" aria-pressed="false" hidden>
+    <svg class="musica__nota" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
+    <span class="musica__barras" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <!-- Fondo difuminado para pantallas grandes -->
+  <div class="fondo-escritorio" aria-hidden="true"></div>
+
+  <main class="invitacion">
+
+    <!-- ============ 1. PORTADA ============ -->
+    <section class="panel panel--portada" id="portada">
+      <div class="contenido contenido--portada">
+        <p class="portada__pre">Estás cordialmente<br>invitado(a) a mis</p>
+        <p class="portada__xv">XV</p>
+        <h1 class="nombre nombre--portada" data-nombre>Irma</h1>
+
+        <div class="adorno" aria-hidden="true">
+          <span></span>
+          <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.2 4.3 2.4.7-1.2 2.1-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>
+          <span></span>
+        </div>
+
+        <div class="fecha-portada" aria-label="Viernes 18 de diciembre de 2026">
+          <span class="fecha-portada__lado">Viernes</span>
+          <span class="fecha-portada__dia">18</span>
+          <span class="fecha-portada__lado">Diciembre</span>
+        </div>
+        <p class="fecha-portada__anio">2026 <span class="fecha-portada__hora">· 7:00 p. m.</span></p>
+      </div>
+
+      <a href="#mensaje" class="indicador-scroll" aria-label="Ver más">
+        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </a>
+    </section>
+
+    <!-- ============ 2. MENSAJE ============ -->
+    <section class="panel panel--jardin" id="mensaje">
+      <div class="contenido contenido--jardin">
+        <p class="mensaje__texto">¡Me encantaría que compartas conmigo este momento tan especial!</p>
+        <p class="firma" data-nombre-firma>Irma <span aria-hidden="true">♡</span></p>
+      </div>
+    </section>
+
+    <!-- ============ 3. VESTIMENTA + UBICACIÓN ============ -->
+    <section class="panel panel--marco" id="vestimenta">
+      <div class="contenido contenido--marco contenido--doble">
+
+        <div class="mitad" id="codigo-vestimenta">
+          <div class="icono-titulo icono-titulo--mini" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 7.5a1.8 1.8 0 1 1 1.8-1.8c0 1-1.8 1.4-1.8 2.6M12 8.3 3 15.2c-.7.5-.3 1.3.5 1.3h17c.8 0 1.2-.8.5-1.3z"/></svg>
+          </div>
+          <h2 class="titulo"><span class="titulo__script">Código de</span><span class="titulo__caps">Vestimenta</span></h2>
+          <p class="vestimenta__estilo">Formal</p>
+          <ul class="paleta" aria-label="Colores reservados para la quinceañera">
+            <li><span class="paleta__color" style="--c:#efb3d1"></span>Rosado</li>
+            <li><span class="paleta__color" style="--c:#b9a0dc"></span>Morado lila</li>
+          </ul>
+          <p class="nota nota--exclusivo">Colores exclusivos para la quinceañera</p>
+        </div>
+
+        <div class="adorno adorno--separador" aria-hidden="true">
+          <span></span>
+          <svg viewBox="0 0 24 24"><path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg>
+          <span></span>
+        </div>
+
+        <div class="mitad" id="ubicacion">
+          <div class="icono-titulo icono-titulo--mini" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 21.5s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg>
+          </div>
+          <h2 class="titulo"><span class="titulo__caps">Ubicación</span></h2>
+          <p class="lugar__nombre" data-lugar-nombre>Plaza Hollywood</p>
+          <p class="lugar__direccion" data-lugar-direccion></p>
+          <a class="boton" data-mapa href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg>
+            Ver ubicación
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ 5. GALERÍA ============ -->
+    <section class="panel panel--marco" id="galeria">
+      <div class="contenido contenido--marco">
+        <div class="icono-titulo" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        </div>
+        <h2 class="titulo"><span class="titulo__caps">Galería</span></h2>
+
+        <div class="carrusel" data-carrusel aria-roledescription="carrusel" aria-label="Fotos de Irma Roshely">
+          <div class="carrusel__pista" data-pista>
+            <!-- Las diapositivas se generan desde main.js (CONFIG.galeria) -->
+          </div>
+          <button class="carrusel__flecha carrusel__flecha--prev" data-prev aria-label="Foto anterior">
+            <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <button class="carrusel__flecha carrusel__flecha--next" data-next aria-label="Foto siguiente">
+            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+        <div class="carrusel__puntos" data-puntos role="tablist" aria-label="Elegir foto"></div>
+
+        <p class="nota nota--italica">Algunos momentos que quiero compartir contigo…</p>
+      </div>
+    </section>
+
+    <!-- ============ REGALO ============ -->
+    <section class="panel panel--marco" id="regalo">
+      <div class="contenido contenido--marco contenido--regalo">
+        <img class="regalo__icono" src="regalo.webp" alt="" width="505" height="520" loading="lazy" decoding="async">
+
+        <p class="regalo__texto">Tu presencia sería el mejor regalo para mí, pero si deseas hacerme un obsequio, tienes esta opción.</p>
+
+        <a class="boton" data-regalo href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="9" width="17" height="4" rx=".8"/><path d="M5 13v7.5h14V13M12 9v11.5M12 9c-1.2-2.8-3.6-4.4-5.2-3.4-1.3.8-.6 3.4 2 3.4H12zm0 0c1.2-2.8 3.6-4.4 5.2-3.4 1.3.8.6 3.4-2 3.4H12z"/></svg>
+          Ver regalos en Amazon
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ 6. CONFIRMAR ASISTENCIA ============ -->
+    <section class="panel panel--marco" id="confirmar">
+      <div class="contenido contenido--marco">
+        <div class="icono-titulo icono-titulo--lleno" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1 0 12 3.5z"/><path d="M9.2 8.6c.3-.5.8-.5 1-.1l.7 1.5c.1.3 0 .6-.2.8l-.5.5c.5 1.1 1.4 2 2.5 2.5l.5-.5c.2-.2.5-.3.8-.2l1.5.7c.4.2.4.7-.1 1-.9.6-2 .7-3 .2a8 8 0 0 1-3.4-3.4c-.5-1-.4-2.1.2-3z"/></svg>
+        </div>
+        <h2 class="titulo"><span class="titulo__script titulo__script--grande">Confirma</span><span class="titulo__serif">tu asistencia</span></h2>
+
+        <p class="nota">Tu confirmación es muy importante para nosotros.</p>
+
+        <a class="boton" data-rsvp href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1 0 12 3.5z"/></svg>
+          Confirmar por WhatsApp
+        </a>
+
+        <p class="gracias">¡Gracias!</p>
+      </div>
+    </section>
+
+    <!-- ============ 7. CIERRE + CUENTA REGRESIVA ============ -->
+    <section class="panel panel--tiara" id="cierre">
+      <div class="contenido contenido--tiara">
+        <p class="cierre__frase">Será un honor<br>compartir este día contigo.</p>
+        <p class="cierre__carino">Con cariño,</p>
+        <p class="nombre nombre--cierre" data-nombre-cierre>Irma <span aria-hidden="true">♡</span></p>
+        <p class="cierre__xv">XV Años</p>
+
+        <div class="cuenta" data-cuenta aria-live="polite">
+          <div class="cuenta__bloque"><span class="cuenta__num" data-dias>00</span><span class="cuenta__etq">días</span></div>
+          <span class="cuenta__sep" aria-hidden="true">·</span>
+          <div class="cuenta__bloque"><span class="cuenta__num" data-horas>00</span><span class="cuenta__etq">horas</span></div>
+          <span class="cuenta__sep" aria-hidden="true">·</span>
+          <div class="cuenta__bloque"><span class="cuenta__num" data-minutos>00</span><span class="cuenta__etq">min</span></div>
+          <span class="cuenta__sep" aria-hidden="true">·</span>
+          <div class="cuenta__bloque"><span class="cuenta__num" data-segundos>00</span><span class="cuenta__etq">seg</span></div>
+        </div>
+        <p class="cuenta__fin" data-cuenta-fin hidden>¡Hoy es el gran día!</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
