@@ -86,6 +86,11 @@ button, input, select { font: inherit; color: inherit; }
 .panel--marco   { background-image: url("fondo-marco.webp"); }
 .panel--tiara   { background-image: url("fondo-tiara.webp"); }
 
+/* El borde superior de cada panel se monta sobre el anterior:
+   solo los elementos reales reciben toques, así nada queda tapado. */
+.panel, .contenido { pointer-events: none; }
+.contenido > *, .panel > a, .panel > button { pointer-events: auto; }
+
 .contenido {
   position: absolute;
   inset: 0;
@@ -248,12 +253,38 @@ button, input, select { font: inherit; color: inherit; }
    2. JARDÍN · FOTO + MENSAJE
    ========================================================= */
 .contenido--jardin {
-  padding: 0 14% 22%;
+  padding: 0 12% 17%;
   justify-content: flex-end;
   gap: 1cqw;
 }
 .contenido--jardin p { text-shadow: 0 0 18px rgba(255, 255, 255, 1), 0 0 6px rgba(255, 255, 255, .95), 0 0 2px rgba(255, 255, 255, .9); }
 
+
+/* Foto de la quinceañera integrada al jardín.
+   El brillo va en el contenedor (no en la imagen) para que no lo recorte
+   la máscara y no se vea ningún borde recto alrededor del vestido. */
+.quince {
+  position: relative;
+  width: 64cqw; margin: 0 auto -3cqw;
+  opacity: 0; transform: translateY(6cqw) scale(.97);
+  transition: opacity 1.4s ease, transform 1.6s cubic-bezier(.2, .8, .2, 1);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, .7));
+}
+.quince.visible { opacity: 1; transform: none; }
+.quince__foto {
+  position: relative; z-index: 1;
+  width: 100%; height: auto;
+  /* la cola del vestido se funde suavemente con el piso del jardín */
+  -webkit-mask-image: linear-gradient(to bottom, #000 88%, rgba(0,0,0,.75) 95%, rgba(0,0,0,.35) 100%);
+          mask-image: linear-gradient(to bottom, #000 88%, rgba(0,0,0,.75) 95%, rgba(0,0,0,.35) 100%);
+}
+/* sombra suave en el piso, para que se vea parada en el jardín */
+.quince__luz {
+  position: absolute; z-index: 0;
+  left: 4%; right: 4%; bottom: -1%; height: 14%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(106, 72, 156, .22), rgba(106, 72, 156, .08) 60%, transparent);
+}
 
 .mensaje__texto {
   font-size: 6.6cqw; line-height: 1.35; font-style: italic; font-weight: 600;
@@ -316,35 +347,68 @@ button, input, select { font: inherit; color: inherit; }
 .detalles li { display: flex; align-items: center; justify-content: center; gap: 2cqw; font-size: 4.4cqw; color: var(--lila-900); }
 .detalles svg { width: 4.8cqw; height: 4.8cqw; fill: none; stroke: var(--lila-500); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 
-/* Galería · carrusel */
-.carrusel {
+/* Galería · polaroids apiladas (lo más grandes posible dentro del marco) */
+.galeria__sub { margin-top: -1cqw; font-size: 3.9cqw; max-width: 84cqw; }
+#galeria .contenido--marco { padding: 13% 6% 15%; gap: 1.4cqw; }
+#galeria .icono-titulo { width: 8cqw; height: 8cqw; }
+#galeria .titulo { margin-top: 0; }
+.polaroids {
   position: relative;
-  width: 66cqw; aspect-ratio: 4 / 5;
-  border-radius: 3cqw;
-  border: 1.4cqw solid #fff;
-  box-shadow: 0 0 0 1px var(--oro), 0 14px 34px rgba(106, 72, 156, .3);
-  overflow: hidden;
-  background: #fff;
+  width: 72cqw; aspect-ratio: 50 / 66;
+  margin: 3.5cqw 0 3cqw;
   touch-action: pan-y;
-  margin-top: 1cqw;
+  user-select: none; -webkit-user-select: none;
+  cursor: grab;
 }
-.carrusel__pista { display: flex; height: 100%; transition: transform .6s cubic-bezier(.22, .8, .24, 1); }
-.carrusel__slide { flex: 0 0 100%; height: 100%; }
-.carrusel__slide img { width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; }
-
-.carrusel__flecha {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  width: 9cqw; height: 9cqw; border: 0; border-radius: 50%;
-  display: grid; place-items: center;
-  background: rgba(255, 255, 255, .8); color: var(--lila-700);
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(75, 42, 120, .2);
+.polaroid {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  padding: 2.6cqw 2.6cqw 0;
+  background: #fff;
+  border-radius: .5cqw;
+  box-shadow: 0 1px 2px rgba(75, 42, 120, .12), 0 10px 26px rgba(75, 42, 120, .22);
+  transition: transform .65s cubic-bezier(.22, .8, .24, 1), opacity .5s ease, box-shadow .4s ease;
+  will-change: transform;
 }
-.carrusel__flecha svg { width: 55%; height: 55%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.carrusel__flecha--prev { left: 2cqw; }
-.carrusel__flecha--next { right: 2cqw; }
+.polaroid img {
+  width: 100%; aspect-ratio: 4 / 5;
+  object-fit: cover; object-position: 50% 40%;
+  background: var(--lila-200);
+  pointer-events: none; -webkit-user-drag: none;
+}
+.polaroid figcaption {
+  flex: 1; display: grid; place-items: center;
+  font-family: var(--f-script); font-size: 8cqw; line-height: 1;
+  color: var(--lila-700);
+}
+.polaroid .foto-vacia { aspect-ratio: 4 / 5; height: auto; }
 
-.carrusel__puntos { display: flex; gap: 2cqw; }
+/* Lugares en la pila */
+.polaroid[data-lugar="0"] { z-index: 5; transform: rotate(-2deg); }
+.polaroid[data-lugar="1"] { z-index: 4; transform: translate(3cqw, 1cqw) rotate(4deg); }
+.polaroid[data-lugar="2"] { z-index: 3; transform: translate(-3cqw, 1.5cqw) rotate(-5deg); }
+.polaroid[data-lugar="fondo"] { z-index: 1; opacity: 0; transform: translate(0, 2cqw) rotate(2deg) scale(.94); }
+.polaroid[data-lugar="fuera"] { z-index: 6; opacity: 0; transform: translate(-125%, -4cqw) rotate(-20deg); pointer-events: none; }
+.polaroid[data-lugar="1"], .polaroid[data-lugar="2"] { box-shadow: 0 1px 2px rgba(75, 42, 120, .1), 0 6px 16px rgba(75, 42, 120, .16); }
+.polaroid:not([data-lugar="0"]) figcaption { opacity: 0; }
+.polaroid--arrastrando { transition: none; cursor: grabbing; }
+
+/* Cinta adhesiva en la de enfrente */
+.polaroid[data-lugar="0"]::before {
+  content: ""; position: absolute; z-index: 2;
+  top: -2.6cqw; left: 50%; width: 24cqw; height: 5.6cqw;
+  transform: translateX(-50%) rotate(2deg);
+  background: linear-gradient(90deg, rgba(234, 180, 207, .75), rgba(220, 203, 239, .8));
+  box-shadow: 0 1px 3px rgba(75, 42, 120, .15);
+  -webkit-mask: linear-gradient(90deg, transparent 0 2%, #000 2% 98%, transparent 98%);
+          mask: linear-gradient(90deg, transparent 0 2%, #000 2% 98%, transparent 98%);
+}
+
+.polaroids__pista {
+  font-family: var(--f-caps); font-size: 2.6cqw; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--texto-suave); opacity: .85;
+}
+.carrusel__puntos { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.6cqw; max-width: 66cqw; }
 .carrusel__puntos button {
   width: 2.2cqw; height: 2.2cqw; border-radius: 999px; border: 0;
   background: var(--lila-200); cursor: pointer; padding: 0;
@@ -548,7 +612,7 @@ button, input, select { font: inherit; color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .contenido--portada > * { opacity: 1; transform: none; }
+  .contenido--portada > *, .quince { opacity: 1; transform: none; }
   .intro-activa .invitacion { transform: none; filter: none; }
 }
 

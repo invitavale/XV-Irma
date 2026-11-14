@@ -9,9 +9,27 @@ const CONFIG = {
   // Fecha y hora del evento (hora de República Dominicana, UTC-4)
   fechaEvento: "2026-12-18T19:00:00-04:00",
 
-  // Carrusel: agrega las rutas en orden. Ejemplo:
-  // galeria: ["foto1.jpg", "foto2.jpg", "foto3.jpg"],
-  galeria: [],
+  // Carrusel de polaroids, en orden de crecimiento.
+  //   src:   ruta de la foto
+  //   texto: lo que se escribe abajo de la polaroid (puedes dejarlo "")
+  //   pos:   punto de enfoque del recorte (horizontal vertical), ej. "50% 30%"
+  galeria: [
+    { src: "fotos/crecimiento-01.webp", texto: "Mi primer día",  pos: "58% 45%" },
+    { src: "fotos/crecimiento-02.webp", texto: "1 año",          pos: "50% 40%" },
+    { src: "fotos/crecimiento-03.webp", texto: "2 años",         pos: "50% 45%" },
+    { src: "fotos/crecimiento-04.webp", texto: "3 años",         pos: "50% 55%" },
+    { src: "fotos/crecimiento-05.webp", texto: "4 años",         pos: "66% 40%" },
+    { src: "fotos/crecimiento-06.webp", texto: "5 años",         pos: "30% 50%" },
+    { src: "fotos/crecimiento-07.webp", texto: "6 años",         pos: "48% 50%" },
+    { src: "fotos/crecimiento-08.webp", texto: "7 años",         pos: "50% 45%" },
+    { src: "fotos/crecimiento-09.webp", texto: "8 años",         pos: "50% 65%" },
+    { src: "fotos/crecimiento-10.webp", texto: "9 años",         pos: "50% 40%" },
+    { src: "fotos/crecimiento-11.webp", texto: "10 años",        pos: "50% 25%" },
+    { src: "fotos/crecimiento-12.webp", texto: "12 años",        pos: "50% 35%" },
+    { src: "fotos/crecimiento-13.webp", texto: "13 años",        pos: "50% 40%" },
+    { src: "fotos/crecimiento-14.webp", texto: "14 años",        pos: "50% 30%" },
+    { src: "fotos/crecimiento-15.webp", texto: "15 años",        pos: "50% 40%" }
+  ],
   espaciosVacios: 3, // cuántos espacios de muestra ver mientras galeria esté vacía
 
   lugar: {
@@ -67,30 +85,35 @@ function aplicarDatos() {
   $("[data-regalo]").href = CONFIG.regaloUrl;
 }
 
-/* ---------- Carrusel ---------- */
+/* ---------- Carrusel de polaroids apiladas ---------- */
 function iniciarCarrusel() {
-  const carrusel = $("[data-carrusel]");
-  const pista = $("[data-pista]");
+  const pila = $("[data-carrusel]");
   const puntos = $("[data-puntos]");
-  const fotos = CONFIG.galeria.filter(Boolean);
+  const fotos = CONFIG.galeria
+    .map(f => (typeof f === "string" ? { src: f } : f))
+    .filter(f => f && f.src);
   const total = fotos.length || CONFIG.espaciosVacios;
+  const tarjetas = [];
 
   for (let i = 0; i < total; i++) {
-    const slide = document.createElement("div");
-    slide.className = "carrusel__slide";
-    slide.setAttribute("role", "group");
-    slide.setAttribute("aria-label", `Foto ${i + 1} de ${total}`);
-
-    if (fotos.length) {
-      slide.appendChild(crearImagen(fotos[i], `Foto ${i + 1} de ${CONFIG.nombre}`));
+    const f = fotos[i];
+    const card = document.createElement("figure");
+    card.className = "polaroid";
+    card.setAttribute("role", "group");
+    card.setAttribute("aria-label", `Foto ${i + 1} de ${total}`);
+    if (f) {
+      const img = crearImagen(f.src, `${CONFIG.nombre}${f.texto ? " · " + f.texto : ""}`);
+      if (f.pos) img.style.objectPosition = f.pos;
+      if (i < 3) img.loading = "eager";
+      card.appendChild(img);
     } else {
-      slide.innerHTML = `
-        <div class="foto-vacia">
-          <svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
-          <span>Foto ${i + 1}</span>
-        </div>`;
+      card.innerHTML = `<div class="foto-vacia"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Foto ${i + 1}</span></div>`;
     }
-    pista.appendChild(slide);
+    const pie = document.createElement("figcaption");
+    pie.textContent = f ? (f.texto || "") : "";
+    card.appendChild(pie);
+    pila.appendChild(card);
+    tarjetas.push(card);
 
     const punto = document.createElement("button");
     punto.type = "button";
@@ -102,35 +125,81 @@ function iniciarCarrusel() {
 
   let actual = 0;
   let auto = null;
+  let enPantalla = false; // las fotos solo pasan solas cuando la galería se ve
 
+  // Cada tarjeta recibe su lugar en la pila: 0 = al frente, 1 y 2 = detrás,
+  // "fuera" = la que acaba de salir, el resto queda escondido al fondo.
   function ir(i) {
     actual = (i + total) % total;
-    pista.style.transform = `translateX(-${actual * 100}%)`;
+    tarjetas.forEach((card, n) => {
+      const lugar = (n - actual + total) % total;
+      card.style.transform = "";
+      card.dataset.lugar = lugar === total - 1 && total > 3 ? "fuera" : (lugar > 2 ? "fondo" : lugar);
+      card.setAttribute("aria-hidden", lugar !== 0);
+    });
     $$("button", puntos).forEach((p, n) => p.setAttribute("aria-selected", n === actual));
+    // Precarga la siguiente
+    const sig = tarjetas[(actual + 3) % total]?.querySelector("img");
+    if (sig) sig.loading = "eager";
   }
   function reiniciarAuto() {
     clearInterval(auto);
-    if (total > 1 && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (enPantalla && total > 1 && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
       auto = setInterval(() => ir(actual + 1), 4500);
     }
   }
 
-  $("[data-prev]").addEventListener("click", () => { ir(actual - 1); reiniciarAuto(); });
-  $("[data-next]").addEventListener("click", () => { ir(actual + 1); reiniciarAuto(); });
-
-  // Deslizar con el dedo
-  let inicioX = null;
-  carrusel.addEventListener("touchstart", e => { inicioX = e.touches[0].clientX; }, { passive: true });
-  carrusel.addEventListener("touchend", e => {
-    if (inicioX === null) return;
-    const dx = e.changedTouches[0].clientX - inicioX;
-    if (Math.abs(dx) > 40) { ir(actual + (dx < 0 ? 1 : -1)); reiniciarAuto(); }
-    inicioX = null;
+  // Arrastrar la polaroid de enfrente con el dedo (o el mouse)
+  let inicioX = null, dx = 0, frente = null;
+  pila.addEventListener("pointerdown", e => {
+    frente = tarjetas[actual];
+    inicioX = e.clientX; dx = 0;
+    try { pila.setPointerCapture(e.pointerId); } catch (_) {}
+    frente.classList.add("polaroid--arrastrando");
+    clearInterval(auto);
   });
+  pila.addEventListener("pointermove", e => {
+    if (inicioX === null) return;
+    dx = e.clientX - inicioX;
+    frente.style.transform = `translateX(${dx}px) rotate(${-2 + dx / 18}deg)`;
+  });
+  const soltar = () => {
+    if (inicioX === null) return;
+    frente.classList.remove("polaroid--arrastrando");
+    if (Math.abs(dx) > 40) ir(actual + (dx < 0 ? 1 : -1));
+    else if (Math.abs(dx) < 6) ir(actual + 1); // un toque: siguiente foto
+    else frente.style.transform = "";
+    inicioX = null;
+    reiniciarAuto();
+  };
+  pila.addEventListener("pointerup", soltar);
+  pila.addEventListener("pointercancel", soltar);
+  pila.addEventListener("pointerleave", soltar);
 
-  if (total < 2) $$(".carrusel__flecha").forEach(b => (b.hidden = true));
   ir(0);
-  reiniciarAuto();
+
+  // Empieza en la primera foto y solo avanza cuando el invitado llega a la galería
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(entradas => {
+      entradas.forEach(en => {
+        enPantalla = en.isIntersecting;
+        if (enPantalla) reiniciarAuto(); else clearInterval(auto);
+      });
+    }, { threshold: 0.6 }).observe(pila);
+  } else {
+    enPantalla = true;
+    reiniciarAuto();
+  }
+}
+
+/* ---------- Animación al entrar en pantalla ---------- */
+function iniciarApariciones() {
+  const els = $$("[data-aparecer]");
+  if (!("IntersectionObserver" in window)) { els.forEach(el => el.classList.add("visible")); return; }
+  const io = new IntersectionObserver(entradas => {
+    entradas.forEach(en => { if (en.isIntersecting) { en.target.classList.add("visible"); io.unobserve(en.target); } });
+  }, { threshold: 0.25 });
+  els.forEach(el => io.observe(el));
 }
 
 /* ---------- Cuenta regresiva ---------- */
@@ -373,6 +442,7 @@ function iniciarBotonMusica() {
 document.addEventListener("DOMContentLoaded", () => {
   aplicarDatos();
   iniciarCarrusel();
+  iniciarApariciones();
   iniciarCuenta();
   iniciarRSVP();
   iniciarBotonMusica();

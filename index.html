@@ -92,6 +92,10 @@
     <!-- ============ 2. MENSAJE ============ -->
     <section class="panel panel--jardin" id="mensaje">
       <div class="contenido contenido--jardin">
+        <figure class="quince" data-aparecer>
+          <span class="quince__luz" aria-hidden="true"></span>
+          <img class="quince__foto" src="quinceanera.webp" alt="Irma Roshely con su vestido de XV años" width="900" height="1200" loading="lazy" decoding="async">
+        </figure>
         <p class="mensaje__texto">¡Me encantaría que compartas conmigo este momento tan especial!</p>
         <p class="firma" data-nombre-firma>Irma <span aria-hidden="true">♡</span></p>
       </div>
@@ -144,20 +148,13 @@
         </div>
         <h2 class="titulo"><span class="titulo__caps">Galería</span></h2>
 
-        <div class="carrusel" data-carrusel aria-roledescription="carrusel" aria-label="Fotos de Irma Roshely">
-          <div class="carrusel__pista" data-pista>
-            <!-- Las diapositivas se generan desde main.js (CONFIG.galeria) -->
-          </div>
-          <button class="carrusel__flecha carrusel__flecha--prev" data-prev aria-label="Foto anterior">
-            <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
-          </button>
-          <button class="carrusel__flecha carrusel__flecha--next" data-next aria-label="Foto siguiente">
-            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
-          </button>
+        <p class="nota nota--italica galeria__sub">Algunos momentos que quiero compartir contigo…</p>
+
+        <div class="polaroids" data-carrusel aria-roledescription="carrusel" aria-label="Fotos de Irma Roshely creciendo">
+          <!-- Las polaroids se generan desde main.js (CONFIG.galeria), en orden de crecimiento -->
         </div>
         <div class="carrusel__puntos" data-puntos role="tablist" aria-label="Elegir foto"></div>
-
-        <p class="nota nota--italica">Algunos momentos que quiero compartir contigo…</p>
+        <p class="polaroids__pista">Desliza para ver la siguiente</p>
       </div>
     </section>
 
